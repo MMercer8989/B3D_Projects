@@ -6,7 +6,7 @@ Include "func_lib/level_ldr.bb"
 Global screen_width = 1280, screen_height = 960 ;640x480
 
 ;Buffer and window setup here----------------------------------------------------------------------------
-Graphics3D screen_width, screen_height, 16, 3
+Graphics3D screen_width, screen_height, 16, 2
 SetBuffer BackBuffer()
 AppTitle "Mini Project... idk :)"
 
@@ -35,7 +35,7 @@ MoveEntity camera,0,6,0 ;move camera to eye height (NOTE: we are moving the came
 
 ;hide the cursor (we don't want to see that ugly thing while playing)
 HidePointer 
-genArea1()
+genArea2()
 
 While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is :P)---------------------
 	;check for user input here

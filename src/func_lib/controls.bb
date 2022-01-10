@@ -18,9 +18,10 @@ Function checkMovement_way1()
     yaw#=yaw#-mxspd*0.1
     ;RotateEntity camera,pitch,0,0
     RotateEntity player,0,yaw,0
+	RotateEntity BOX,0,-yaw,0 ;we want to make sure the skybox moves as well otherwise we'll always be staring at one side
 
     ;move player-----------------------------------------------------------------------------------
-    spd#=0.8
+    spd#=0.1
     If KeyDown(17) MoveEntity player,0,0,spd
     If KeyDown(31) MoveEntity player,0,0,-spd
     If KeyDown(32) MoveEntity player,spd,0,0

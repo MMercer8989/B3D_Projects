@@ -60,6 +60,7 @@ Function makeSkybox(side1$,side2$,side3$,side4$,top$,bottom$)
 	EntityOrder skybox,10
 	
 	BOX = skybox
+	EntityParent BOX,player
 End Function
 
 Function makeGround(r,g,b);function to make the ground plane, the parameters are r,g,b color values
@@ -69,17 +70,22 @@ Function makeGround(r,g,b);function to make the ground plane, the parameters are
 	
 	GROUND = grnd
 
+	;tex = LoadTexture("assets/textures/" + tex$, 1+8)
+	;EntityTexture grnd,tex
+
 End Function
 
 Function genArea1() ;grassland
-	;make skybox
-	makeGround(100,200,300)
+	makeSkybox("WST_1.bmp","WST_2.bmp","WST_3.bmp","WST_4.bmp","WST_T.bmp","WST_B.bmp")
+	makeGround(183,230,130)
 End Function
 
 Function genArea2() ;snow
-	Print "WIP"
+	makeSkybox("SNW_1.bmp","SNW_2.bmp","SNW_3.bmp","SNW_4.bmp","SNW_T.bmp","SNW_B.bmp")
+	makeGround(200,255,255)
 End Function
 
-Function genArea3()
-	Print "WIP"
+Function genArea3() ;desert
+	makeSkybox("SND_1.bmp","SND_2.bmp","SND_3.bmp","SND_4.bmp","SND_T.bmp","SND_B.bmp")
+	makeGround(255,200,110)
 End Function
