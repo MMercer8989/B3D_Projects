@@ -25,6 +25,6 @@ Function checkMovement_way1()
     If KeyDown(31) MoveEntity player,0,0,-spd
     If KeyDown(32) MoveEntity player,spd,0,0
     If KeyDown(30) MoveEntity player,-spd,0,0
-	TranslateEntity player,0,-.8,0
+	;TranslateEntity player,0,-.8,0
 
 End Function
