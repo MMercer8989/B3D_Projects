@@ -84,18 +84,25 @@ Function makeGround(r,g,b);function to make the ground plane, the parameters are
 
 End Function
 
+Function getOffset(length)
+	SeedRnd(MilliSecs())
+	offset = Rand(1,length*2 - 1)
+	While (offset Mod 2) = 0 ;the offset is even, we want it to be odd
+		SeedRnd(MilliSecs()*MilliSecs())
+		offset = Rand(1,length*2 - 1)
+	Wend
+	Return offset
+End Function
+ 
 Function makeMaze(length,width) ;a maze generator function :)
 	;fill the space with blocks...------------------------------------------------------------------
 
-	;make sure random is given a seed
-	SeedRnd(MilliSecs())
-
 	;generate coordinates for the start and finish cells (the origins go by 8 so make sure it's valid)
 	strX = 8
-	strZ = 8*Rand(1,length*2 - 1)
+	strZ = 8*getOffset(length)
 
 	endX = 8*(width*2) - 8
-	endZ = 8*Rand(1,length*2 - 1)
+	endZ = 8*getOffset(length);Rand(1,length*2 - 1)
 
 	curX = 0 
 
@@ -124,20 +131,33 @@ Function makeMaze(length,width) ;a maze generator function :)
 				maze\Solid = False
 				maze\IsStart = False 
 				maze\IsEnd = True 
-
 				PositionEntity maze\Obj,curX,0,curZ
 				ScaleEntity maze\Obj,4,8,4
 				EntityColor maze\Obj,0,0,255
 
 			Else
-				maze\Obj = CreateCube()
-				maze\Solid = True
-				maze\IsStart = False
-				maze\IsEnd = False
-				PositionEntity maze\Obj,curX,0,curZ ;
-				ScaleEntity maze\Obj,4,8,4
-				;EntityColor maze\Obj,Rand(1,255),Rand(1,255),Rand(1,255)
+				;these coordinates are not the start or end, see if this cell is an intermediate cell or a true cell (solid/non-solid)
+				If (Not (curX / 8) Mod 2 = 0) And (Not (curZ / 8) Mod 2 = 0) ;part of the wall
+					maze\Obj = CreateCube()
+					maze\Solid = False ;solid is false, this is a true cell
+					maze\IsStart = False
+					maze\IsEnd = False
+					PositionEntity maze\Obj,curX,0,curZ
+					ScaleEntity maze\Obj,4,8,4
+					EntityColor maze\Obj,255,0,255 ;true cells are colored as purple for now
 
+				Else
+					maze\Obj = CreateCube()
+					maze\Solid = True ;solid, it's an intermediate cell
+					maze\IsStart = False
+					maze\IsEnd = False
+					PositionEntity maze\Obj,curX,0,curZ
+					ScaleEntity maze\Obj,4,8,4
+					EntityColor maze\Obj,0,0,0 ;intermediate cells are colored as black for now
+
+				EndIf
+				
+				;EntityColor maze\Obj,Rand(1,255),Rand(1,255),Rand(1,255)
 
 			EndIf
 		
@@ -151,15 +171,10 @@ Function makeMaze(length,width) ;a maze generator function :)
 	;next: now that the start and end have been picked, go through again and check the neighbors
 	;NOTE: this cell should be just inside the maze
 
+	;now we can start carving passages
+	;call a function/algorithm to carve the maze (hunt and kill method)
 
-	;maze.cell = First cell
-	;EntityColor maze\Obj,0,255,0
-
-	;maze = After maze
-	;EntityColor maze\Obj,0,255,255
-	;For maze.cell = Each cell
-		;EntityColor maze\Obj,Rand(1,255),Rand(1,255),Rand(1,255)
-	;Next
+	;iterate through the cells and add their meshes together
 
 
 End Function
@@ -167,7 +182,7 @@ End Function
 Function genArea1() ;grassland
 	makeSkybox("WST_1.bmp","WST_2.bmp","WST_3.bmp","WST_4.bmp","WST_T.bmp","WST_B.bmp")
 	makeGround(183,230,130)
-	makeMaze(4,4)
+	makeMaze(6,6)
 End Function
 
 Function genArea2() ;snow
