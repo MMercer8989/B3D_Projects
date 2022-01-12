@@ -33,9 +33,10 @@ EntityRadius player,2
 EntityParent camera,player ;attach main camera to player. The camera should naturally be the eyes
 MoveEntity camera,0,6,0 ;move camera to eye height (NOTE: we are moving the camera rather than the pivot)
 
+PositionEntity player,-5,6,0
 ;hide the cursor (we don't want to see that ugly thing while playing)
 HidePointer 
-genArea2()
+genArea1()
 
 While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is :P)---------------------
 	;check for user input here
