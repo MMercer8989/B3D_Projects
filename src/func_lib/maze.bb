@@ -9,11 +9,10 @@ Type CELL
 End Type
 
 Function initGrid()
-	;fill the grid with blocks. '8' for intermediate/walls, '1' for cells, and '0' for cells that have been visited 
 	For row = 0 To 70 ;size
 		For col = 0 To 70 ;size
 			If (Not row Mod 2 = 0) And (Not col Mod 2 = 0) ;actual cell
-				grid(row,col) = 1
+				grid(row,col) = 1 ;unvisited cell, '0' is a visited cell
 			Else
 				grid(row,col) = 8 ;wall
 			EndIf 
@@ -32,6 +31,7 @@ Function checkCell(x,z)
 End Function
 
 Function walk(x,z)
+	If Not grid(x,z) = 0 Then grid(x,z) = 0 ;make sure the cell we are at has been marked
 	neighbors = 4
 	
 	While neighbors > 0 ;while the current cell has neighbors to go to
@@ -44,22 +44,18 @@ Function walk(x,z)
 		Next
 		
 		If Not checkCell(x+2,z)
-		;If (x + 2 > 70) Or (grid(x+2,z) = 0) 
 			neighbors = neighbors - 1;cant go south. it's either not valid or visited
 			dirs(0) = 0
 		EndIf
-		If Not checkCell(x-2,z)
-		;If (x - 2 < 0) Or (grid(x-2,z) = 0) 
+		If Not checkCell(x-2,z) 
 			neighbors = neighbors - 1;cant go north
 			dirs(1) = 0
 		EndIf
-		If Not checkCell(x,z+2)
-		;If (z + 2 > 70) Or (grid(x,z+2) = 0) 
+		If Not checkCell(x,z+2) 
 			neighbors = neighbors - 1;cant go east
 			dirs(2) = 0
 		EndIf
 		If Not checkCell(x,z-2)
-		;If (z - 2 < 0) Or (grid(x,z-2) = 0) 
 			neighbors = neighbors - 1;cant go west
 			dirs(3) = 0
 		EndIf
@@ -81,14 +77,30 @@ Function walk(x,z)
 				Case 4 ;go west
 					z = z-2
 			End Select
-				grid(x,z) = 0 ;mark the new cell as visited
-				grid(((x+oldx) / 2), ((z+oldz) / 2)) = 0 ;remove the wall
+			grid(x,z) = 0 ;mark the new cell as visited
+			grid(((x+oldx) / 2), ((z+oldz) / 2)) = 0 ;remove the wall
 		EndIf
 	Wend
 End Function
 
-Function hunt()
-
+Function hunt() ;TODO: after tearing down a wall, poke the current coords into the bank and exit the function. make sure to return the bank handle
+	coords=CreateBank(2)
+	For row = 1 To 69
+		For col = 1 To 69
+			If grid(row,col) = 1 ;found a cell not visited
+				;see if any of it's neighbors have been visited, go to the first one found
+				If (row+2 < 70)
+					If grid(row+2,col) = 0 Then grid(row+1,col) = 0
+				ElseIf (row-2 > 0)
+					If grid(row-2,col) = 0 Then grid(row-1,col) = 0
+				ElseIf (col+2 < 70)
+					If grid(row,col+2) = 0 Then grid(row,col+1) = 0
+				ElseIf (col-2 > 0)
+					If grid(row,col-2) = 0 Then grid(row,col-1) = 0
+				EndIf 
+			EndIf
+		Next
+	Next
 End Function
 
 Function mazeGen()
@@ -106,7 +118,7 @@ Function mazeGen()
 	
 	curX = strX
 	curZ = strZ
-	grid(curX,curZ) = 0 ;mark the starting position as visited
+	;grid(curX,curZ) = 0 ;mark the starting position as visited
 	;now enter a loop and call walk and hunt until done
 	walk(curX, curZ)
 	;lastly, go through the grid and generate geometry based on the contents
