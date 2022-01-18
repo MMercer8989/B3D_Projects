@@ -121,6 +121,17 @@ Function mazeGen()
 	;grid(curX,curZ) = 0 ;mark the starting position as visited
 	;now enter a loop and call walk and hunt until done
 	walk(curX, curZ)
+	done = 0
+	While done = 0
+		;hunt()
+		;walk()
+		done = 1 ;set done to 1 then check the grid, if it is truly done then it will remain 1
+		For row = 0 To 70
+			For col = 0 To 70
+				If grid(row,col) = 1 Then done = 0
+			Next
+		Next
+	Wend
 	;lastly, go through the grid and generate geometry based on the contents
 	
 End Function
