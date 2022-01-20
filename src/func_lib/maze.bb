@@ -20,11 +20,24 @@ Function initGrid()
 	Next
 End Function
 
-Function checkCell(x,z)
+Function loadMessage() ;display loading text
+	Color 216,149,25
+	oldTime=MilliSecs()
+	While MilliSecs() < oldTime + 3
+		Text screen_width/2,screen_height/2,"NOW LOADING..."
+	Wend
+	
+End Function
+
+Function checkCell(x,z,mode$)
 	valid = False
 	If ((x < 70) And (x > 0)) And ((z < 70) And (z > 0)) ;make sure we are within the bounds of the grid
-		If (Not grid(x,z) = 0) ;has the cell been visited?
-			valid = True ;the cell hasn't been visited
+		If mode$ = "v" ;we want to return true if the neighbor has been visited
+			If grid(x,z) = 0 Then valid = True
+		ElseIf mode$ = "unv" ;we want to return true if the neighbor is unvisited (should be default)
+			If (Not grid(x,z) = 0) ;has the cell been visited?
+				valid = True
+			EndIf
 		EndIf
 	EndIf
 	Return valid
@@ -35,7 +48,6 @@ Function walk(x,z)
 	neighbors = 4
 	
 	While neighbors > 0 ;while the current cell has neighbors to go to
-		;find out which neighbors we can go to
 		oldx = x
 		oldz = z
 		neighbors = 4
@@ -43,28 +55,31 @@ Function walk(x,z)
 			dirs(i) = i+1
 		Next
 		
-		If Not checkCell(x+2,z)
+		loadMessage() ;aka, the 'slow down' function 
+		
+		If Not checkCell(x+2,z,"unv")
 			neighbors = neighbors - 1;cant go south. it's either not valid or visited
 			dirs(0) = 0
 		EndIf
-		If Not checkCell(x-2,z) 
+		If Not checkCell(x-2,z,"unv") 
 			neighbors = neighbors - 1;cant go north
 			dirs(1) = 0
 		EndIf
-		If Not checkCell(x,z+2) 
+		If Not checkCell(x,z+2,"unv")
 			neighbors = neighbors - 1;cant go east
 			dirs(2) = 0
 		EndIf
-		If Not checkCell(x,z-2)
+		If Not checkCell(x,z-2,"unv")
 			neighbors = neighbors - 1;cant go west
 			dirs(3) = 0
 		EndIf
 		
 		If neighbors > 0
-			;pick at random one of our valid neighbors
-			SeedRnd(MilliSecs())
+			;pick at random one of the valid neighbors
+			SeedRnd(MilliSecs()+MilliSecs())
 			path = dirs(Rand(0,3)) ;pretty simple, 1 is north, 2 east, 3 south, 4 west
 			While path = 0
+				SeedRnd(MilliSecs()+MilliSecs())
 				path = dirs(Rand(0,3))
 			Wend
 			Select path
@@ -79,24 +94,36 @@ Function walk(x,z)
 			End Select
 			grid(x,z) = 0 ;mark the new cell as visited
 			grid(((x+oldx) / 2), ((z+oldz) / 2)) = 0 ;remove the wall
+		Else
+			Return
 		EndIf
 	Wend
 End Function
 
-Function hunt() ;TODO: after tearing down a wall, poke the current coords into the bank and exit the function. make sure to return the bank handle
-	coords=CreateBank(2)
+Function hunt(bank)
 	For row = 1 To 69
 		For col = 1 To 69
-			If grid(row,col) = 1 ;found a cell not visited
-				;see if any of it's neighbors have been visited, go to the first one found
-				If (row+2 < 70)
-					If grid(row+2,col) = 0 Then grid(row+1,col) = 0
-				ElseIf (row-2 > 0)
-					If grid(row-2,col) = 0 Then grid(row-1,col) = 0
-				ElseIf (col+2 < 70)
-					If grid(row,col+2) = 0 Then grid(row,col+1) = 0
-				ElseIf (col-2 > 0)
-					If grid(row,col-2) = 0 Then grid(row,col-1) = 0
+			If grid(row,col) = 1 ;found a cell not visited, now check for visited neighbors
+				If checkCell(row+2,col,"v")
+					grid(row+1,col) = 0 ;tear down the wall
+					PokeByte bank,0,row ;store the x coord
+					PokeByte bank,1,col ;store the z coord
+					Return
+				ElseIf checkCell(row-2,col,"v")
+					grid(row-1,col) = 0
+					PokeByte bank,0,row
+					PokeByte bank,1,col
+					Return
+				ElseIf checkCell(row,col+2,"v") 
+					grid(row,col+1) = 0
+					PokeByte bank,0,row
+					PokeByte bank,1,col
+					Return
+				ElseIf checkCell(row,col-2,"v")
+					grid(row,col-1) = 0
+					PokeByte bank,0,row
+					PokeByte bank,1,col
+					Return
 				EndIf 
 			EndIf
 		Next
@@ -106,25 +133,27 @@ End Function
 Function mazeGen()
 	initGrid()
 
-	SeedRnd(MilliSecs())
+	SeedRnd(MilliSecs()+MilliSecs())
 	strX = 1
 	strZ = Rand(1,69) ;size - 1
 	If strZ Mod 2 = 0 Then strZ = strZ + 1
 
-	SeedRnd(MilliSecs())
+	SeedRnd(MilliSecs()+MilliSecs())
 	endX = 69 ;size - 1
 	endZ = Rand(1,69) ;size - 1
 	If endZ Mod 2 = 0 Then endZ = endZ + 1
 	
 	curX = strX
 	curZ = strZ
-	;grid(curX,curZ) = 0 ;mark the starting position as visited
-	;now enter a loop and call walk and hunt until done
+
 	walk(curX, curZ)
+	coords=CreateBank(2) ;this bank will be used to swap coords between functions since two values can't be returned at the same time
 	done = 0
 	While done = 0
-		;hunt()
-		;walk()
+		hunt(coords)
+		curX = PeekByte(coords,0)
+		curZ = PeekByte(coords,1)
+		walk(curX,curZ)
 		done = 1 ;set done to 1 then check the grid, if it is truly done then it will remain 1
 		For row = 0 To 70
 			For col = 0 To 70
@@ -132,6 +161,26 @@ Function mazeGen()
 			Next
 		Next
 	Wend
-	;lastly, go through the grid and generate geometry based on the contents
+	FreeBank coords ;make sure the bank is set free
+	;go through the grid and generate geometry based on the contents
+	curX = 0
+	For row = 0 To 70
+		curZ = 0
+		For col = 0 To 70
+		
+		maze.cell = New cell
+		maze\X = curX
+		maze\Z = curZ
+		If grid(row,col) = 8
+			maze\Obj = CreateCube()
+			PositionEntity maze\Obj,curX,0,curZ
+			ScaleEntity maze\Obj,4,8,4
+			EntityColor maze\Obj,191,191,191
+		EndIf
+
+		curZ = curZ+8
+		Next
+	curX = curX+8
+	Next
 	
 End Function
