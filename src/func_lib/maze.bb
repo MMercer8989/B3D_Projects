@@ -163,24 +163,25 @@ Function mazeGen()
 	Wend
 	FreeBank coords ;make sure the bank is set free
 	;go through the grid and generate geometry based on the contents
+	b_Offset = 8
 	curX = 0
 	For row = 0 To GRID_SIZE
 		curZ = 0
 		For col = 0 To GRID_SIZE
 		
-		maze.cell = New cell
-		maze\X = curX
-		maze\Z = curZ
-		If grid(row,col) = 8
-			maze\Obj = CreateCube()
-			PositionEntity maze\Obj,curX,0,curZ
-			ScaleEntity maze\Obj,4,8,4
-			EntityColor maze\Obj,191,191,191
-		EndIf
+			maze.cell = New cell
+			maze\X = curX
+			maze\Z = curZ
+			If grid(row,col) = 8
+				maze\Obj = CreateCube()
+				PositionEntity maze\Obj,curX,0,curZ
+				ScaleEntity maze\Obj,(b_Offset/2),8,(b_Offset/2)
+				EntityColor maze\Obj,191,191,191
+			EndIf
 
-		curZ = curZ+8
+			curZ = curZ+b_Offset
 		Next
-	curX = curX+8
+		curX = curX+b_Offset
 	Next
 	
 End Function
