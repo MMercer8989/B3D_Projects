@@ -1,5 +1,5 @@
-;Global SIZE
-Dim grid(70, 70)
+Global GRID_SIZE = 70
+Dim grid(GRID_SIZE, GRID_SIZE)
 Dim dirs(3)
 
 Type CELL
@@ -9,8 +9,8 @@ Type CELL
 End Type
 
 Function initGrid()
-	For row = 0 To 70 ;size
-		For col = 0 To 70 ;size
+	For row = 0 To GRID_SIZE ;size
+		For col = 0 To GRID_SIZE ;size
 			If (Not row Mod 2 = 0) And (Not col Mod 2 = 0) ;actual cell
 				grid(row,col) = 1 ;unvisited cell, '0' is a visited cell
 			Else
@@ -31,7 +31,7 @@ End Function
 
 Function checkCell(x,z,mode$)
 	valid = False
-	If ((x < 70) And (x > 0)) And ((z < 70) And (z > 0)) ;make sure we are within the bounds of the grid
+	If ((x < GRID_SIZE) And (x > 0)) And ((z < GRID_SIZE) And (z > 0)) ;make sure we are within the bounds of the grid
 		If mode$ = "v" ;we want to return true if the neighbor has been visited
 			If grid(x,z) = 0 Then valid = True
 		ElseIf mode$ = "unv" ;we want to return true if the neighbor is unvisited (should be default)
@@ -101,8 +101,8 @@ Function walk(x,z)
 End Function
 
 Function hunt(bank)
-	For row = 1 To 69
-		For col = 1 To 69
+	For row = 1 To (GRID_SIZE - 1)
+		For col = 1 To (GRID_SIZE - 1)
 			If grid(row,col) = 1 ;found a cell not visited, now check for visited neighbors
 				If checkCell(row+2,col,"v")
 					grid(row+1,col) = 0 ;tear down the wall
@@ -135,12 +135,12 @@ Function mazeGen()
 
 	SeedRnd(MilliSecs()+MilliSecs())
 	strX = 1
-	strZ = Rand(1,69) ;size - 1
+	strZ = Rand(1,(GRID_SIZE - 1)) ;size - 1
 	If strZ Mod 2 = 0 Then strZ = strZ + 1
 
 	SeedRnd(MilliSecs()+MilliSecs())
-	endX = 69 ;size - 1
-	endZ = Rand(1,69) ;size - 1
+	endX = GRID_SIZE - 1 ;size - 1
+	endZ = Rand(1,(GRID_SIZE - 1)) ;size - 1
 	If endZ Mod 2 = 0 Then endZ = endZ + 1
 	
 	curX = strX
@@ -155,8 +155,8 @@ Function mazeGen()
 		curZ = PeekByte(coords,1)
 		walk(curX,curZ)
 		done = 1 ;set done to 1 then check the grid, if it is truly done then it will remain 1
-		For row = 0 To 70
-			For col = 0 To 70
+		For row = 0 To GRID_SIZE
+			For col = 0 To GRID_SIZE
 				If grid(row,col) = 1 Then done = 0
 			Next
 		Next
@@ -164,9 +164,9 @@ Function mazeGen()
 	FreeBank coords ;make sure the bank is set free
 	;go through the grid and generate geometry based on the contents
 	curX = 0
-	For row = 0 To 70
+	For row = 0 To GRID_SIZE
 		curZ = 0
-		For col = 0 To 70
+		For col = 0 To GRID_SIZE
 		
 		maze.cell = New cell
 		maze\X = curX
