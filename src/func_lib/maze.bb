@@ -135,12 +135,12 @@ Function mazeGen()
 
 	SeedRnd(MilliSecs()+MilliSecs())
 	strX = 1
-	strZ = Rand(1,(GRID_SIZE - 1)) ;size - 1
+	strZ = Rand(1,(GRID_SIZE - 1))
 	If strZ Mod 2 = 0 Then strZ = strZ + 1
 
 	SeedRnd(MilliSecs()+MilliSecs())
-	endX = GRID_SIZE - 1 ;size - 1
-	endZ = Rand(1,(GRID_SIZE - 1)) ;size - 1
+	endX = GRID_SIZE - 1
+	endZ = Rand(1,(GRID_SIZE - 1))
 	If endZ Mod 2 = 0 Then endZ = endZ + 1
 	
 	curX = strX

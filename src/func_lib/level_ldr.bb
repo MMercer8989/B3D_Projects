@@ -12,49 +12,49 @@ Function makeTrees(tree$)
 End Function
 
 Function makeSkybox(side1$,side2$,side3$,side4$,top$)
-	skybox=CreateMesh()
+	BOX=CreateMesh()
 	;first face (front)
 	b=LoadBrush("assets/skyboxes/" + side1$,49) ;filename for side1
-	s=CreateSurface(skybox,b)
+	s=CreateSurface(BOX,b)
 	AddVertex s,-1,+1,-1,0,0:AddVertex s,+1,+1,-1,1,0
 	AddVertex s,+1,-1,-1,1,1:AddVertex s,-1,-1,-1,0,1
 	AddTriangle s,0,1,2:AddTriangle s,0,2,3
 	FreeBrush b
 	;Next face (Left)
 	b=LoadBrush("assets/skyboxes/" + side3$,49) ;filename for side3
-	s=CreateSurface(skybox,b)
+	s=CreateSurface(BOX,b)
 	AddVertex s,+1,+1,-1,0,0:AddVertex s,+1,+1,+1,1,0
 	AddVertex s,+1,-1,+1,1,1:AddVertex s,+1,-1,-1,0,1
 	AddTriangle s,0,1,2:AddTriangle s,0,2,3
 	FreeBrush b
 	;next face (rear)
 	b=LoadBrush("assets/skyboxes/" + side2$,49) ;filename for side2
-	s=CreateSurface(skybox,b)
+	s=CreateSurface(BOX,b)
 	AddVertex s,+1,+1,+1,0,0:AddVertex s,-1,+1,+1,1,0
 	AddVertex s,-1,-1,+1,1,1:AddVertex s,+1,-1,+1,0,1
 	AddTriangle s,0,1,2:AddTriangle s,0,2,3
 	FreeBrush b
 	;next face (right)
 	b=LoadBrush("assets/skyboxes/" + side4$,49) ;filename for side4
-	s=CreateSurface(skybox,b)
+	s=CreateSurface(BOX,b)
 	AddVertex s,-1,+1,+1,0,0:AddVertex s,-1,+1,-1,1,0
 	AddVertex s,-1,-1,-1,1,1:AddVertex s,-1,-1,+1,0,1
 	AddTriangle s,0,1,2:AddTriangle s,0,2,3
 	FreeBrush b
 	;top face
 	b=LoadBrush("assets/skyboxes/" + top$,49) ;filename for top
-	s=CreateSurface(skybox,b)
+	s=CreateSurface(BOX,b)
 	AddVertex s,-1,+1,+1,0,1:AddVertex s,+1,+1,+1,0,0
 	AddVertex s,+1,+1,-1,1,0:AddVertex s,-1,+1,-1,1,1
 	AddTriangle s,0,1,2:AddTriangle s,0,2,3
 	FreeBrush b
 	;finalize
-	ScaleMesh skybox,200,200,200
-	FlipMesh skybox
-	EntityFX skybox,1
-	EntityOrder skybox,10
+	ScaleMesh BOX,200,200,200
+	FlipMesh BOX
+	EntityFX BOX,1
+	EntityOrder BOX,10
 	
-	BOX = skybox
+	;BOX = skybox
 	EntityParent BOX,player
 End Function
 
