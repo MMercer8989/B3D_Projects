@@ -1,15 +1,8 @@
-Include "func_lib/maze.bb"
-
 Global GROUND ;the ground plane
 Global BOX ;skybox
+Global EX ;the exit
 
-Function makeGrass(grass$) ;pretty flexible, can pass in the sprite filename
-	Print "WIP"
-End Function
-
-Function makeTrees(tree$)
-	Print "WIP"
-End Function
+Include "func_lib/maze.bb"
 
 Function makeSkybox(side1$,side2$,side3$,side4$,top$)
 	BOX=CreateMesh()
@@ -53,17 +46,30 @@ Function makeSkybox(side1$,side2$,side3$,side4$,top$)
 	FlipMesh BOX
 	EntityFX BOX,1
 	EntityOrder BOX,10
-	
-	;BOX = skybox
 	EntityParent BOX,player
+
+End Function
+
+Function makeExit() ;makes the exit
+	EX=CreateSphere(2)
+	ScaleEntity EX,5,4,5
+	PositionEntity EX,0,20,0
+	EntityAlpha EX,.9
+	EntityColor EX,192,79,190
+	
+	aura=CreateLight(2,EX)
+	PointEntity aura,EX
+	LightColor aura,0,13,251
+	LightRange aura,50
+
+	;Return EX
+	
 End Function
 
 Function makeGround(r,g,b);function to make the ground plane, the parameters are r,g,b color values
-	grnd=CreatePlane()
-	EntityColor grnd,r,g,b
-	EntityType grnd,LEVEL_COL
-	
-	GROUND = grnd
+	GROUND=CreatePlane()
+	EntityColor GROUND,r,g,b
+	EntityType GROUND,LEVEL_COL
 
 End Function
 
@@ -71,16 +77,19 @@ Function genArea1() ;grassland
 	makeSkybox("WST_1.bmp","WST_2.bmp","WST_3.bmp","WST_4.bmp","WST_T.bmp")
 	makeGround(183,230,130)
 	mazeGen()
+
 End Function
 
 Function genArea2() ;snow
 	makeSkybox("SNW_1.bmp","SNW_2.bmp","SNW_3.bmp","SNW_4.bmp","SNW_T.bmp")
 	makeGround(200,255,255)
 	mazeGen()
+
 End Function
 
 Function genArea3() ;desert
 	makeSkybox("SND_1.bmp","SND_2.bmp","SND_3.bmp","SND_4.bmp","SND_T.bmp")
 	makeGround(255,200,110)
 	mazeGen()
+
 End Function

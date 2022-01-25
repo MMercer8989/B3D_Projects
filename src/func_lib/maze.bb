@@ -1,16 +1,10 @@
-Global GRID_SIZE = 70
+Global GRID_SIZE = 16 ;70
 Dim grid(GRID_SIZE, GRID_SIZE)
 Dim dirs(3)
 
-Type CELL
-	Field X
-	Field Z
-	Field Obj
-End Type
-
 Function initGrid()
-	For row = 0 To GRID_SIZE ;size
-		For col = 0 To GRID_SIZE ;size
+	For row = 0 To GRID_SIZE 
+		For col = 0 To GRID_SIZE 
 			If (Not row Mod 2 = 0) And (Not col Mod 2 = 0) ;actual cell
 				grid(row,col) = 1 ;unvisited cell, '0' is a visited cell
 			Else
@@ -131,6 +125,8 @@ Function hunt(bank)
 End Function
 
 Function mazeGen()
+	tex=LoadTexture("assets/textures/wall.bmp")
+	ScaleTexture tex,.5,.3
 	initGrid()
 
 	SeedRnd(MilliSecs()+MilliSecs())
@@ -162,26 +158,34 @@ Function mazeGen()
 		Next
 	Wend
 	FreeBank coords ;make sure the bank is set free
+
 	;go through the grid and generate geometry based on the contents
-	b_Offset = 8
+	b_Offset = 14
 	curX = 0
 	For row = 0 To GRID_SIZE
 		curZ = 0
 		For col = 0 To GRID_SIZE
 		
-			maze.cell = New cell
-			maze\X = curX
-			maze\Z = curZ
-			If grid(row,col) = 8
-				maze\Obj = CreateCube()
-				PositionEntity maze\Obj,curX,0,curZ
-				ScaleEntity maze\Obj,(b_Offset/2),8,(b_Offset/2)
-				EntityColor maze\Obj,191,191,191
+			If grid(row,col) = 8 ;wall character
+				GROUND = CreateCube()
+				PositionEntity GROUND,curX,0,curZ
+				ScaleEntity GROUND,(b_Offset/2),9,(b_Offset/2)
+				EntityTexture GROUND, tex
+				EntityFX GROUND,4
+				EntityType GROUND, LEVEL_COL
+
+			ElseIf row = 1 And col = strZ
+				PositionEntity player,curX,6,curZ
+				ResetEntity player ;if the collision state is not reset then position entity will not work
+
+			ElseIf row = endX And col = endZ
+				PositionEntity EX,curX,5,curZ ;place the exit
+
 			EndIf
 
 			curZ = curZ+b_Offset
 		Next
 		curX = curX+b_Offset
 	Next
-	
+
 End Function

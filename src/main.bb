@@ -14,17 +14,24 @@ AppTitle "Mini Project... idk :)"
 ;collision types
 Global PLAYER_COL = 1
 Global LEVEL_COL = 2
+Global EXIT_COL = 3
 ;collision actions
-Collisions PLAYER_COL,LEVEL_COL, 2,3
+Collisions PLAYER_COL,LEVEL_COL, 2,2
+Collisions PLAYER_COL,EXIT_COL,2,3
 
 ;show and then destroy the start menu--------------------------------------------------------------------
 ;Include "func_lib/menu.bb"
 ;StartMenu()
 ;Destroymenu()
 
+;make the primary light source---------------------------------------------------------------------------
+sun=CreateLight(2,BOX)
+LightRange sun,14
+
 ;configure the main camera-------------------------------------------------------------------------------
 Global camera = CreateCamera() ;camera
 CameraClsColor camera,200,200,255
+CameraRange camera,1,300
 
 ;configure the player (our pivot)------------------------------------------------------------------------
 Global player = CreatePivot() ;player, basically campiv from the previous excursions
@@ -33,21 +40,28 @@ EntityRadius player,2
 EntityParent camera,player ;attach main camera to player. The camera should naturally be the eyes
 MoveEntity camera,0,6,0 ;move camera to eye height (NOTE: we are moving the camera rather than the pivot)
 
-PositionEntity player,-5,6,0
+PositionEntity player,0,30,0
 ;hide the cursor (we don't want to see that ugly thing while playing)
-HidePointer 
-genArea1()
+HidePointer
+
+makeExit()
+genArea2() 
+
 
 While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is :P)---------------------
 	;check for user input here
 	;checkMapChange()
 	
 	;check if the new movement method is to be used(works when placed before 'Update World')
-	checkMovement_way1()
-
+	checkMovement()
+	If EntityInView(EX,camera)
+		ExYaw# = ExYaw#+1
+		RotateEntity EX,0,ExYaw#,0
+	EndIf
+	
 	UpdateWorld
 	RenderWorld
-		
+
 	Flip
 Wend
 ;end of the mainloop-------------------------------------------------------------------------------------
