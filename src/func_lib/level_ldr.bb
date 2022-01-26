@@ -53,16 +53,14 @@ End Function
 Function makeExit() ;makes the exit
 	EX=CreateSphere(2)
 	ScaleEntity EX,5,4,5
-	PositionEntity EX,0,20,0
 	EntityAlpha EX,.9
 	EntityColor EX,192,79,190
+	EntityType EX,EXIT_COL
 	
 	aura=CreateLight(2,EX)
 	PointEntity aura,EX
 	LightColor aura,0,13,251
 	LightRange aura,50
-
-	;Return EX
 	
 End Function
 
@@ -92,4 +90,21 @@ Function genArea3() ;desert
 	makeGround(255,200,110)
 	mazeGen()
 
+End Function
+
+Function RandWorld()
+	SeedRnd(MilliSecs()+MilliSecs())
+	world=Rand(0,2)
+	Select world
+		Case 0
+			genArea1()
+		Case 1
+			genArea2()
+		Case 2
+			genArea3()
+	End Select 
+End Function
+
+Function DestroyWorld()
+		
 End Function

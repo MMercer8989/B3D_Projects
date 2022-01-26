@@ -8,7 +8,7 @@ Global screen_width = 1280, screen_height = 960 ;640x480
 ;Buffer and window setup here----------------------------------------------------------------------------
 Graphics3D screen_width, screen_height, 16, 2
 SetBuffer BackBuffer()
-AppTitle "Mini Project... idk :)"
+AppTitle "Zen Mazes"
 
 ;configure collision info--------------------------------------------------------------------------------
 ;collision types
@@ -45,7 +45,7 @@ PositionEntity player,0,30,0
 HidePointer
 
 makeExit()
-genArea2() 
+RandWorld() 
 
 
 While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is :P)---------------------
@@ -54,9 +54,15 @@ While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is
 	
 	;check if the new movement method is to be used(works when placed before 'Update World')
 	checkMovement()
+	;rotate the exit object
 	If EntityInView(EX,camera)
 		ExYaw# = ExYaw#+1
 		RotateEntity EX,0,ExYaw#,0
+	EndIf
+	;handle exit collisions
+	If EntityCollided(player,EXIT_COL) = EX
+		DestroyWorld()
+		RandWorld()
 	EndIf
 	
 	UpdateWorld
