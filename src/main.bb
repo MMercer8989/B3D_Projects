@@ -23,6 +23,8 @@ Collisions PLAYER_COL,EXIT_COL,2,3
 ;Include "func_lib/menu.bb"
 ;StartMenu()
 ;Destroymenu()
+;now hide the cursor (we don't want to see that ugly thing while playing)
+HidePointer
 
 ;make the primary light source---------------------------------------------------------------------------
 sun=CreateLight(2,BOX)
@@ -41,18 +43,15 @@ EntityParent camera,player ;attach main camera to player. The camera should natu
 MoveEntity camera,0,6,0 ;move camera to eye height (NOTE: we are moving the camera rather than the pivot)
 
 PositionEntity player,0,30,0
-;hide the cursor (we don't want to see that ugly thing while playing)
-HidePointer
 
+;Finalize the world--------------------------------------------------------------------------------------
+GROUND=CreatePlane()
+EntityType GROUND,LEVEL_COL
 makeExit()
 RandWorld() 
 
-
 While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is :P)---------------------
 	;check for user input here
-	;checkMapChange()
-	
-	;check if the new movement method is to be used(works when placed before 'Update World')
 	checkMovement()
 	;rotate the exit object
 	If EntityInView(EX,camera)
@@ -62,7 +61,6 @@ While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is
 	;handle exit collisions
 	If EntityCollided(player,EXIT_COL) = EX
 		DestroyWorld()
-		RandWorld()
 	EndIf
 	
 	UpdateWorld

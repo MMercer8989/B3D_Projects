@@ -1,4 +1,5 @@
 Global GROUND ;the ground plane
+Global WALL ;the walls
 Global BOX ;skybox
 Global EX ;the exit
 
@@ -64,30 +65,29 @@ Function makeExit() ;makes the exit
 	
 End Function
 
-Function makeGround(r,g,b);function to make the ground plane, the parameters are r,g,b color values
-	GROUND=CreatePlane()
-	EntityColor GROUND,r,g,b
-	EntityType GROUND,LEVEL_COL
-
-End Function
-
 Function genArea1() ;grassland
 	makeSkybox("WST_1.bmp","WST_2.bmp","WST_3.bmp","WST_4.bmp","WST_T.bmp")
-	makeGround(183,230,130)
+	EntityColor GROUND,183,230,130
+	WALL = CreateMesh()
+	EntityType WALL, LEVEL_COL
 	mazeGen()
 
 End Function
 
 Function genArea2() ;snow
 	makeSkybox("SNW_1.bmp","SNW_2.bmp","SNW_3.bmp","SNW_4.bmp","SNW_T.bmp")
-	makeGround(200,255,255)
+	EntityColor GROUND,200,255,255
+	WALL = CreateMesh()
+	EntityType WALL, LEVEL_COL
 	mazeGen()
 
 End Function
 
 Function genArea3() ;desert
 	makeSkybox("SND_1.bmp","SND_2.bmp","SND_3.bmp","SND_4.bmp","SND_T.bmp")
-	makeGround(255,200,110)
+	EntityColor GROUND,255,200,110
+	WALL = CreateMesh()
+	EntityType WALL, LEVEL_COL
 	mazeGen()
 
 End Function
@@ -106,5 +106,9 @@ Function RandWorld()
 End Function
 
 Function DestroyWorld()
+	PositionEntity player,0,30,0
+	FreeEntity WALL
+	FreeEntity BOX
+	RandWorld()
 		
 End Function

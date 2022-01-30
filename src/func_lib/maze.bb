@@ -128,7 +128,6 @@ Function mazeGen()
 	tex=LoadTexture("assets/textures/wall.bmp")
 	ScaleTexture tex,.5,.3
 	initGrid()
-
 	SeedRnd(MilliSecs()+MilliSecs())
 	strX = 1
 	strZ = Rand(1,(GRID_SIZE - 1))
@@ -167,12 +166,13 @@ Function mazeGen()
 		For col = 0 To GRID_SIZE
 		
 			If grid(row,col) = 8 ;wall character
-				GROUND = CreateCube()
-				PositionEntity GROUND,curX,0,curZ
-				ScaleEntity GROUND,(b_Offset/2),9,(b_Offset/2)
-				EntityTexture GROUND, tex
-				EntityFX GROUND,4
-				EntityType GROUND, LEVEL_COL
+				temp = CreateCube(WALL)
+				PositionEntity temp,curX,0,curZ
+				ScaleEntity temp,(b_Offset/2),9,(b_Offset/2)
+				EntityTexture temp, tex
+				EntityFX temp,4
+				AddMesh temp, WALL
+				EntityType temp, LEVEL_COL
 
 			ElseIf row = 1 And col = strZ
 				PositionEntity player,curX,6,curZ
