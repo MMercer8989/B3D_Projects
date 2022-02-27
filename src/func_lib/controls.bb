@@ -14,7 +14,7 @@ Function checkMovement()
     ;note, we change only camera pitch as it's attached to the pivot of the player which
     ;only changes it's yaw. This for various reasons makes it easy to control.
 
-    pitch#=pitch#+myspd*0.1
+    ;pitch#=pitch#+myspd*0.1
     yaw#=yaw#-mxspd*0.1
     ;RotateEntity camera,pitch,0,0
     RotateEntity player,0,yaw,0

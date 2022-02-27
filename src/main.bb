@@ -1,14 +1,21 @@
-;Include statements here---------------------------------------------------------------------------------
-Include "func_lib/controls.bb"
-Include "func_lib/level_ldr.bb"
-
-;Globals here--------------------------------------------------------------------------------------------
+;Setup Graphics------------------------------------------------------------------------------------------
 Global screen_width = 1280, screen_height = 960 ;640x480
 
 ;Buffer and window setup here----------------------------------------------------------------------------
-Graphics3D screen_width, screen_height, 16, 2
+Graphics3D screen_width, screen_height, 16, 3
 SetBuffer BackBuffer()
 AppTitle "Zen Mazes"
+
+;Menu and maze size--------------------------------------------------------------------------------------
+Global difficulty$
+Global GRID_SIZE
+Include "func_lib/menu.bb"
+StartMenu()
+Cls
+
+;Include statements here---------------------------------------------------------------------------------
+Include "func_lib/controls.bb"
+Include "func_lib/level_ldr.bb"
 
 ;configure collision info--------------------------------------------------------------------------------
 ;collision types
@@ -19,10 +26,6 @@ Global EXIT_COL = 3
 Collisions PLAYER_COL,LEVEL_COL, 2,2
 Collisions PLAYER_COL,EXIT_COL,2,3
 
-;show and then destroy the start menu--------------------------------------------------------------------
-;Include "func_lib/menu.bb"
-;StartMenu()
-;Destroymenu()
 ;now hide the cursor (we don't want to see that ugly thing while playing)
 HidePointer
 
@@ -50,6 +53,7 @@ EntityType GROUND,LEVEL_COL
 makeExit()
 RandWorld() 
 
+Score=0
 While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is :P)---------------------
 	;check for user input here
 	checkMovement()
@@ -60,11 +64,15 @@ While Not KeyHit(1) ;main loop (loops until the esc key is hit, that's what 1 is
 	EndIf
 	;handle exit collisions
 	If EntityCollided(player,EXIT_COL) = EX
+		Score=Score+1 ;increase the score
 		DestroyWorld()
 	EndIf
 	
 	UpdateWorld
 	RenderWorld
+
+	Text 10,0,"Mazes Complete: " + Score
+	Text 200,0,"Difficulty Level: " + difficulty$
 
 	Flip
 Wend

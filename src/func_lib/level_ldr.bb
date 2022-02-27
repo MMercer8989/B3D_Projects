@@ -106,6 +106,7 @@ Function RandWorld()
 End Function
 
 Function DestroyWorld()
+	Cls
 	PositionEntity player,0,30,0
 	FreeEntity WALL
 	FreeEntity BOX

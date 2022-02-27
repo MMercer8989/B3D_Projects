@@ -1,4 +1,4 @@
-Global GRID_SIZE = 16 ;70
+;Global GRID_SIZE = 16 ;70
 Dim grid(GRID_SIZE, GRID_SIZE)
 Dim dirs(3)
 
@@ -18,7 +18,7 @@ Function loadMessage() ;display loading text
 	Color 216,149,25
 	oldTime=MilliSecs()
 	While MilliSecs() < oldTime + 3
-		Text screen_width/2,screen_height/2,"NOW LOADING..."
+		;Text screen_width/2,screen_height/2,"NOW LOADING..."
 	Wend
 	
 End Function
